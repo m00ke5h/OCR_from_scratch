@@ -94,8 +94,6 @@ def knn(X_train, Y_train, X_test, k):
             for pair in sorted(enumerate(training_distances), key=lambda x: x[1])
         ]
         candidates = [Y_train[idx] for idx in sorted_distance_indices[:k]]
-        # print(f'Point is {bytes_to_int(Y_test[test_sample_idx])} and we guessed {candidates}')
-        # y_sample = 5
         top_canditate = get_most_frequent_element(candidates)
         y_pred.append(top_canditate)
     return y_pred
