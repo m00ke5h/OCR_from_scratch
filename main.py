@@ -7,8 +7,11 @@ TEST_DATA = "data/t10k-images-idx3-ubyte"
 TEST_LABELS = "data/t10k-labels-idx1-ubyte"
 TRAINING_DATA = "data/train-images-idx3-ubyte"
 TRAINING_LABELS = "data/train-labels-idx1-ubyte"
-DEBUG = False    # Set Debug True/False
-k = 5    # Hyperparameter
+DEBUG = False  # Set Debug True/False
+k = 5  # Hyperparameter
+NUM_TRAINING = 10000  # Number of images to train
+NUM_TEST = 30  # Number of images to test
+
 
 if DEBUG:
     from PIL import Image
@@ -99,33 +102,26 @@ def knn(X_train, Y_train, X_test, k):
 
 
 def main():
-    X_train = read_images(TRAINING_DATA, 10000)
-    Y_train = read_labels(TRAINING_LABELS, 10000)
-    X_test = read_images(TEST_DATA, 30)
-    Y_test = read_labels(TEST_LABELS, 30)
-    # print(len(X_train), len(Y_train), len(X_test), len(Y_test), sep='\n')
+    X_train = read_images(TRAINING_DATA, NUM_TRAINING)
+    Y_train = read_labels(TRAINING_LABELS, NUM_TRAINING)
+    X_test = read_images(TEST_DATA, NUM_TEST)
+    Y_test = read_labels(TEST_LABELS, NUM_TEST)
 
     if DEBUG:
         for idx, test_sample in enumerate(X_test):
             write_image(test_sample, f"{TEST_DIR}{idx}.png")
         X_test = [read_image(f"{TEST_DIR}our_test.png")]
-        Y_test =[5]
+        Y_test = [5]
 
     X_train = extract_features(X_train)
     X_test = extract_features(X_test)
 
-    # print(len(X_train[0]))
-    # print(len(X_test[0]))
-
     y_pred = knn(X_train, Y_train, X_test, k)
     print(f"Predicted labels: \n{y_pred}")
     accuracy = sum(
-        [
-            int(y_pred_i == y_test_i)
-            for y_pred_i, y_test_i in zip(y_pred, Y_test)
-        ]
+        [int(y_pred_i == y_test_i) for y_pred_i, y_test_i in zip(y_pred, Y_test)]
     ) / len(Y_test)
-    print(f'\n\nAccuracy: {accuracy*100}%')
+    print(f"\n\nAccuracy: {accuracy*100}%")
 
 
 if __name__ == "__main__":
